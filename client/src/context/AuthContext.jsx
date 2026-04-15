@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
 
   // Global interceptors: Attach token & handle 401
   useEffect(() => {
-    const reqInterceptor = axios.interceptors.request.use((config) => {
+    const reqInterceptor = api.interceptors.request.use((config) => {
       const token = localStorage.getItem('token');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
       return config;
     }, (error) => Promise.reject(error));
 
-    const resInterceptor = axios.interceptors.response.use(
+    const resInterceptor = api.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response && error.response.status === 401) {
@@ -61,8 +61,8 @@ export const AuthProvider = ({ children }) => {
     );
     
     return () => {
-      axios.interceptors.request.eject(reqInterceptor);
-      axios.interceptors.response.eject(resInterceptor);
+      api.interceptors.request.eject(reqInterceptor);
+      api.interceptors.response.eject(resInterceptor);
     };
   }, [logout]);
 
