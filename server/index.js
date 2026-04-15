@@ -11,6 +11,17 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+const ML_KEEPALIVE_URL = process.env.ML_KEEPALIVE_URL || 'https://deep-fake-detection-ml.onrender.com/docs';
+
+const pingMlService = async () => {
+  try {
+    await fetch(ML_KEEPALIVE_URL);
+    console.log('ML pinged');
+  } catch (error) {
+    console.log('Ping failed');
+  }
+};
+
 app.get('/', (req, res) => {
   res.send('Backend is running 🚀');
 });
@@ -28,3 +39,6 @@ if (!fs.existsSync(uploadDir)) {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+pingMlService();
+setInterval(pingMlService, 5 * 60 * 1000);
