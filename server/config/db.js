@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const connectDB = async () => {
   try {
-    // Spin up an ephemeral in-memory MongoDB instance!
-    const mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
+    let uri = process.env.MONGO_URI;
 
-    const conn = await mongoose.connect(uri);
-    console.log(`Ephemeral MongoDB Connected seamlessly!`);
-    console.log(`-------------------------------------------------`);
-    console.log(`Compass Connection URI:`);
-    console.log(`\n${uri}\n`);
-    console.log(`-------------------------------------------------`);
+    // If no MONGO_URI set, fall back to in-memory for local development
+    if (!uri || uri.includes('127.0.0.1')) {
+      const { MongoMemoryServer } = require('mongodb-memory-server');
+      const mongoServer = await MongoMemoryServer.create();
+      uri = mongoServer.getUri();
+      console.log(`Ephemeral MongoDB Connected (local dev mode)`);
+      console.log(`Compass URI: ${uri}`);
+    }
+
+    await mongoose.connect(uri);
+    console.log(`MongoDB Connected Successfully!`);
   } catch (error) {
     console.error(`MongoDB Error: ${error.message}`);
     process.exit(1);
