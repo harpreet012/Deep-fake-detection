@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Upload, AlertCircle, CheckCircle, Video, Image as ImageIcon, Camera, RefreshCw, Terminal, Activity, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Webcam from 'react-webcam';
@@ -83,7 +83,7 @@ const UploadPage = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:5000/api/predict/upload', formData, {
+      const res = await api.post('/api/predict/upload', formData, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

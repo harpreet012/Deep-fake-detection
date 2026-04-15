@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext, useCallback } from 'react';
-import axios from 'axios';
+import api from '../api';
 
 export const AuthContext = createContext();
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
     if (storedUser && storedToken) {
       // Quick validation: hit an authenticated endpoint to confirm the token is still valid
-      axios.get('http://localhost:5000/api/predict/history', {
+      api.get('/api/predict/history', {
         headers: { Authorization: `Bearer ${storedToken}` }
       })
       .then(() => {
@@ -67,14 +67,14 @@ export const AuthProvider = ({ children }) => {
   }, [logout]);
 
   const login = async (email, password) => {
-    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+    const res = await api.post('/api/auth/login', { email, password });
     setUser(res.data);
     localStorage.setItem('user', JSON.stringify(res.data));
     if (res.data.token) localStorage.setItem('token', res.data.token);
   };
 
   const register = async (name, email, password) => {
-    const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+    const res = await api.post('/api/auth/register', { name, email, password });
     setUser(res.data);
     localStorage.setItem('user', JSON.stringify(res.data));
     if (res.data.token) localStorage.setItem('token', res.data.token);

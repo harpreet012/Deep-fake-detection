@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { Activity, ShieldAlert, CheckCircle, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -15,7 +15,7 @@ const Dashboard = () => {
     const fetchHistory = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/predict/history', {
+        const res = await api.get('/api/predict/history', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setHistory(res.data);
